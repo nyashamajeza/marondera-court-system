@@ -1,29 +1,15 @@
-# Dependencies
-node_modules/
-package-lock.json
-
-# Environment variables - KEEP THESE SECRET!
+# Environment files - NEVER commit these!
 .env
-.env.production
-.env.local
+.env.*
+!.env.example
 
 # Backups
 backups/
 *.gz
 
+# Node modules
+node_modules/
+package-lock.json
+
 # Logs
-logs/
 *.log
-npm-debug.log*
-
-# AWS credentials
-.aws/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-
-# OS
-.DS_Store
-Thumbs.db
