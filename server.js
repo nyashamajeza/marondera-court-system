@@ -102,10 +102,10 @@ app.use((req, res) => {
     });
 });
 
-// Start server
+// Start server - DECLARE PORT ONLY ONCE HERE
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
     console.log(`📁 Project folder: ${__dirname}`);
-    console.log(`🔧 Environment: ${process.env.NODE_ENV}`);
+    console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
