@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <style>
+        /* Copy the navbar/sidebar styles from cases.ejs */
+        .form-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+        }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .btn-save { background: #1e3c72; color: white; padding: 0.75rem 2rem; border: none; border-radius: 5px; cursor: pointer; }
+        .btn-cancel { background: #6c757d; color: white; padding: 0.75rem 2rem; text-decoration: none; border-radius: 5px; margin-left: 1rem; }
+    </style>
+</head>
+<body>
+    <!-- Copy navbar and sidebar from cases.ejs -->
+    <main class="main-content">
+        <h1>Add New Case</h1>
+        <div class="form-container">
+            <form method="POST" action="/admin/cases">
+                <div class="form-group">
+                    <label>Case Type</label>
+                    <select name="caseType" required>
+                        <option value="Small Claims">Small Claims</option>
+                        <option value="Civil">Civil</option>
+                        <option value="Criminal">Criminal</option>
+                        <option value="Family">Family</option>
+                        <option value="Traffic">Traffic</option>
+                    </select>
+                </div>
+                
+                <h3>Plaintiff Information</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Plaintiff Name</label>
+                        <input type="text" name="parties[plaintiff][name]" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Plaintiff Contact</label>
+                        <input type="text" name="parties[plaintiff][contact]">
+                    </div>
+                </div>
+                
+                <h3>Defendant Information</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Defendant Name</label>
+                        <input type="text" name="parties[defendant][name]" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Defendant Contact</label>
+                        <input type="text" name="parties[defendant][contact]">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Hearing Date</label>
+                        <input type="date" name="hearingDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Courtroom</label>
+                        <input type="text" name="courtroom" placeholder="e.g., 1">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Magistrate</label>
+                        <input type="text" name="magistrate">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="status">
+                            <option value="Filed">Filed</option>
+                            <option value="Scheduled">Scheduled</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="description" rows="3"></textarea>
+                </div>
+                
+                <button type="submit" class="btn-save">Create Case</button>
+                <a href="/admin/cases" class="btn-cancel">Cancel</a>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Lookup - Marondera Court</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-bar {
+            background: white;
+            border-bottom: 1px solid #ddd;
+            padding: 0.5rem 1.5rem;
+        }
+
+        .nav-links {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #555;
+            text-decoration: none;
+            padding: 0.5rem 0;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #1e3c72;
+        }
+
+        .main-content {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .search-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-card h2 {
+            color: #1e3c72;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-card p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #1e3c72;
+        }
+
+        .search-box button {
+            background: #1e3c72;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .search-box button:hover {
+            background: #2a5298;
+        }
+
+        .search-box button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 2rem;
+            display: none;
+        }
+
+        .case-header {
+            border-bottom: 2px solid #1e3c72;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .case-header h3 {
+            color: #1e3c72;
+            font-size: 1.5rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .status-filed { background: #e3f2fd; color: #1976d2; }
+        .status-scheduled { background: #fff3e0; color: #f57c00; }
+        .status-in-progress { background: #e8f5e8; color: #388e3c; }
+        .status-completed { background: #e8eaf6; color: #3f51b5; }
+        .status-adjourned { background: #f3e5f5; color: #7b1fa2; }
+        .status-closed { background: #fafafa; color: #616161; }
+
+        .case-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-group {
+            margin-bottom: 1rem;
+        }
+
+        .detail-group label {
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+
+        .detail-group p {
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .detail-group .contact-info {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .documents-section {
+            margin-top: 2rem;
+            border-top: 1px solid #ddd;
+            padding-top: 1.5rem;
+        }
+
+        .documents-section h4 {
+            color: #1e3c72;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .document-item {
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .document-item:hover {
+            background: #f8f9fa;
+        }
+
+        .document-info {
+            flex: 1;
+        }
+
+        .document-name {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .document-meta {
+            font-size: 0.85rem;
+            color: #666;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .document-type {
+            background: #e3f2fd;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #1976d2;
+        }
+
+        .no-documents {
+            color: #999;
+            font-style: italic;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+            display: none;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1e3c72;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .example {
+            margin-top: 1rem;
+            color: #999;
+            font-size: 0.85rem;
+        }
+
+        .example span {
+            background: #f0f2f5;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .example span:hover {
+            background: #e0e2e5;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>⚖️ Marondera Magistrate Court</h1>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-links">
+            <a href="/">🏠 Dashboard</a>
+            <a href="/upload">📤 Upload Evidence</a>
+            <a href="/lookup" style="color: #1e3c72; font-weight: bold;">🔍 Case Lookup</a>
+            <a href="/admin/login">👤 Admin Login</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="search-card">
+            <h2>🔍 Look Up Your Case</h2>
+            <p>Enter your case number to view case details and uploaded documents.</p>
+            
+            <div class="search-box">
+                <input type="text" id="caseNumber" placeholder="e.g., SMC/2024/0001" value="SMC/2024/0001">
+                <button onclick="searchCase()" id="searchBtn">Search</button>
+            </div>
+            
+            <div class="example">
+                <small>Try: <span onclick="document.getElementById('caseNumber').value='SMC/2024/0001'">SMC/2024/0001</span> | 
+                <span onclick="document.getElementById('caseNumber').value='SMC/2024/0002'">SMC/2024/0002</span></small>
+            </div>
+            
+            <div id="searchError" class="error-message"></div>
+        </div>
+
+        <div id="resultCard" class="result-card">
+            <!-- Results will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        async function searchCase() {
+            const caseNumber = document.getElementById('caseNumber').value.trim();
+            const errorDiv = document.getElementById('searchError');
+            const resultCard = document.getElementById('resultCard');
+            const searchBtn = document.getElementById('searchBtn');
+
+            if (!caseNumber) {
+                errorDiv.textContent = 'Please enter a case number';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // Show loading state
+            errorDiv.style.display = 'none';
+            searchBtn.disabled = true;
+            searchBtn.textContent = 'Searching...';
+            
+            resultCard.style.display = 'block';
+            resultCard.innerHTML = `
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Searching for case ${caseNumber}...</p>
+                </div>
+            `;
+
+            try {
+                const response = await fetch(`/api/cases/number/${caseNumber}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    displayCaseDetails(data.case, data.documents || []);
+                } else {
+                    resultCard.style.display = 'none';
+                    errorDiv.textContent = 'Case not found. Please check the case number.';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                resultCard.style.display = 'none';
+                errorDiv.textContent = 'Error searching for case. Please try again.';
+                errorDiv.style.display = 'block';
+            } finally {
+                // Reset button
+                searchBtn.disabled = false;
+                searchBtn.textContent = 'Search';
+            }
+        }
+
+        function displayCaseDetails(case_, documents) {
+            const resultCard = document.getElementById('resultCard');
+            
+            const statusClass = {
+                'Filed': 'status-filed',
+                'Scheduled': 'status-scheduled',
+                'In Progress': 'status-in-progress',
+                'Completed': 'status-completed',
+                'Adjourned': 'status-adjourned',
+                'Closed': 'status-closed'
+            }[case_.status] || 'status-filed';
+
+            // Format documents
+            let documentsHtml = '';
+            if (documents && documents.length > 0) {
+                documentsHtml = documents.map(doc => `
+                    <div class="document-item">
+                        <div class="document-info">
+                            <div class="document-name">${doc.fileName}</div>
+                            <div class="document-meta">
+                                <span>Uploaded: ${new Date(doc.uploadDate).toLocaleDateString()}</span>
+                                <span>Size: ${(doc.fileSize / 1024).toFixed(2)} KB</span>
+                            </div>
+                        </div>
+                        <span class="document-type">${doc.documentType}</span>
+                    </div>
+                `).join('');
+            } else {
+                documentsHtml = '<div class="no-documents">No documents uploaded yet</div>';
+            }
+
+            resultCard.innerHTML = `
+                <div class="case-header">
+                    <h3>Case: ${case_.caseNumber}</h3>
+                    <span class="status-badge ${statusClass}">${case_.status}</span>
+                </div>
+                
+                <div class="case-details">
+                    <div>
+                        <div class="detail-group">
+                            <label>Plaintiff</label>
+                            <p>${case_.parties?.plaintiff?.name || 'N/A'}</p>
+                            ${case_.parties?.plaintiff?.contact ? 
+                                `<div class="contact-info">📧 ${case_.parties.plaintiff.contact}</div>` : ''}
+                        </div>
+                        <div class="detail-group">
+                            <label>Case Type</label>
+                            <p>${case_.caseType || 'N/A'}</p>
+                        </div>
+                        <div class="detail-group">
+                            <label>Filing Date</label>
+                            <p>${case_.filingDate ? new Date(case_.filingDate).toLocaleDateString() : 'N/A'}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-group">
+                            <label>Defendant</label>
+                            <p>${case_.parties?.defendant?.name || 'N/A'}</p>
+                            ${case_.parties?.defendant?.contact ? 
+                                `<div class="contact-info">📧 ${case_.parties.defendant.contact}</div>` : ''}
+                        </div>
+                        <div class="detail-group">
+                            <label>Hearing Date</label>
+                            <p>${case_.hearingDate ? new Date(case_.hearingDate).toLocaleDateString() : 'Not scheduled'}</p>
+                        </div>
+                        <div class="detail-group">
+                            <label>Courtroom / Magistrate</label>
+                            <p>Court ${case_.courtroom || 'TBA'} ${case_.magistrate ? `- ${case_.magistrate}` : ''}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="documents-section">
+                    <h4>📄 Case Documents (${documents?.length || 0})</h4>
+                    ${documentsHtml}
+                </div>
+            `;
+            
+            resultCard.style.display = 'block';
+        }
+
+        // Allow Enter key to search
+        document.getElementById('caseNumber').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchCase();
+            }
+        });
+
+        // Auto-search with default value on page load
+        window.addEventListener('load', function() {
+            // Uncomment to auto-search on load
+            // searchCase();
+        });
+    </script>
+</body>
+</html>

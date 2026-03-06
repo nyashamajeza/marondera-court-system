@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-bar {
+            background: white;
+            border-bottom: 1px solid #ddd;
+            padding: 0.5rem 1.5rem;
+        }
+
+        .nav-links {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #555;
+            text-decoration: none;
+            padding: 0.5rem 0;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #1e3c72;
+        }
+
+        .main-content {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .upload-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 2rem;
+        }
+
+        .upload-card h2 {
+            color: #1e3c72;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-card p {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1e3c72;
+        }
+
+        .form-group input[type="file"] {
+            padding: 0.5rem;
+            border: 2px dashed #ddd;
+            background: #f8f9fa;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 0.25rem;
+            color: #999;
+            font-size: 0.85rem;
+        }
+
+        .btn-primary {
+            background: #1e3c72;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: #2a5298;
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .file-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .file-info p {
+            margin: 0.25rem 0;
+        }
+
+        .guidelines {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #e3f2fd;
+            border-radius: 5px;
+        }
+
+        .guidelines h3 {
+            color: #1976d2;
+            margin-bottom: 0.5rem;
+        }
+
+        .guidelines ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .guidelines li {
+            padding: 0.25rem 0;
+            color: #555;
+        }
+
+        .guidelines li:before {
+            content: "✓ ";
+            color: #1976d2;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>⚖️ Marondera Magistrate Court</h1>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-links">
+            <a href="/">🏠 Dashboard</a>
+            <a href="/upload" style="color: #1e3c72; font-weight: bold;">📤 Upload Evidence</a>
+            <a href="/lookup">🔍 Case Lookup</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="upload-card">
+            <h2>Upload Case Evidence</h2>
+            <p>Please use this form to upload documents related to your case.</p>
+
+            <form id="uploadForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="caseNumber">Case Number *</label>
+                    <input type="text" id="caseNumber" name="caseNumber" 
+                           placeholder="e.g., SMC/2024/0001" required>
+                    <small>Enter your case number exactly as shown on your summons</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="litigantName">Your Full Name *</label>
+                    <input type="text" id="litigantName" name="litigantName" 
+                           placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="litigantContact">Phone Number or Email</label>
+                    <input type="text" id="litigantContact" name="litigantContact" 
+                           placeholder="For updates on your submission">
+                </div>
+
+                <div class="form-group">
+                    <label for="documentType">Document Type</label>
+                    <select id="documentType" name="documentType">
+                        <option value="Evidence">Evidence</option>
+                        <option value="Affidavit">Affidavit</option>
+                        <option value="Pleading">Pleading</option>
+                        <option value="Motion">Motion</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="evidence">Select File *</label>
+                    <input type="file" id="evidence" name="evidence" 
+                           accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.txt" required>
+                    <small>Maximum file size: 50MB. Allowed formats: PDF, JPG, PNG, DOC, DOCX, TXT</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Brief Description (Optional)</label>
+                    <textarea id="description" name="description" rows="3" 
+                              placeholder="Describe what this document is about..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary" id="uploadBtn">
+                    Upload Evidence
+                </button>
+            </form>
+
+            <div id="uploadMessage" class="message"></div>
+
+            <div id="fileInfo" class="file-info"></div>
+
+            <div class="guidelines">
+                <h3>📋 Upload Guidelines</h3>
+                <ul>
+                    <li>Ensure documents are clear and legible</li>
+                    <li>Maximum file size is 50MB</li>
+                    <li>Supported formats: PDF, JPEG, PNG, DOC, DOCX, TXT</li>
+                    <li>Do not upload password-protected files</li>
+                    <li>File names should not contain special characters</li>
+                    <li>You will receive a confirmation once uploaded</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show file info when file is selected
+        document.getElementById('evidence').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const fileInfo = document.getElementById('fileInfo');
+                fileInfo.innerHTML = `
+                    <p><strong>Selected File:</strong> ${file.name}</p>
+                    <p><strong>Size:</strong> ${(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                    <p><strong>Type:</strong> ${file.type || 'Unknown'}</p>
+                `;
+                fileInfo.style.display = 'block';
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const messageDiv = document.getElementById('uploadMessage');
+            const uploadBtn = document.getElementById('uploadBtn');
+            
+            // Disable button during upload
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = 'Uploading...';
+            
+            messageDiv.className = 'message info';
+            messageDiv.textContent = 'Uploading your document... Please wait.';
+            messageDiv.style.display = 'block';
+
+            try {
+                const response = await fetch('/api/upload/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    messageDiv.className = 'message success';
+                    messageDiv.textContent = '✅ Evidence uploaded successfully! Your document has been saved.';
+                    
+                    // Reset form
+                    e.target.reset();
+                    document.getElementById('fileInfo').style.display = 'none';
+                    
+                    // Show success details
+                    messageDiv.innerHTML = `
+                        <strong>✅ Upload Successful!</strong><br>
+                        Document: ${result.document.fileName}<br>
+                        Case: ${result.document.caseNumber}<br>
+                        <small>Uploaded at: ${new Date(result.document.uploadDate).toLocaleString()}</small>
+                    `;
+                } else {
+                    messageDiv.className = 'message error';
+                    messageDiv.textContent = '❌ Error: ' + (result.error || 'Upload failed');
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                messageDiv.className = 'message error';
+                messageDiv.textContent = '❌ Upload failed. Please check your connection and try again.';
+            } finally {
+                // Re-enable button
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = 'Upload Evidence';
+            }
+        });
+    </script>
+</body>
+</html>
