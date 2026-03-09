@@ -43,23 +43,9 @@ app.use(session({
     cookie: { 
         maxAge: 3600000,
         httpOnly: true,
-        secure: false // Set to true only in production with HTTPS
+        secure: process.env.NODE_ENV === 'production' // true in production (HTTPS)
     }
 }));
-
-// After session configuration, add:
-app.use((req, res, next) => {
-    console.log('📋 Session Debug:');
-    console.log('  Path:', req.path);
-    console.log('  Session ID:', req.sessionID);
-    console.log('  Session User:', req.session.user ? 'Logged in' : 'Not logged in');
-    if (req.session.user) {
-        console.log('  User:', req.session.user.username);
-    }
-    console.log('  Cookies:', req.headers.cookie);
-    console.log('---');
-    next();
-});
 
 app.use(flash());
 
@@ -75,61 +61,24 @@ app.use((req, res, next) => {
     next();
 });
 
-// Add this near your other routes in server.js
-app.get('/debug-routes', (req, res) => {
-    const routes = [];
-    
-    
-    // Get all registered routes
-    app._router.stack.forEach(middleware => {
-        if (middleware.route) {
-            // Routes registered directly on app
-            routes.push({
-                path: middleware.route.path,
-                methods: Object.keys(middleware.route.methods)
-            });
-        } else if (middleware.name === 'router') {
-            // Routes registered via router (like your admin routes)
-            middleware.handle.stack.forEach(handler => {
-                if (handler.route) {
-                    const path = middleware.regexp.source
-                        .replace('\\/?(?=\\/|$)', '')
-                        .replace(/\\\//g, '/')
-                        .replace(/\^/g, '')
-                        .replace(/\?/g, '');
-                    
-                    routes.push({
-                        path: path + (handler.route.path === '/' ? '' : handler.route.path),
-                        methods: Object.keys(handler.route.methods)
-                    });
-                }
-            });
-        }
-    });
-    
-    res.json({
-        routes: routes.sort(),
-        adminRoutesExist: routes.some(r => r.path.includes('/admin/login'))
-    });
+// ===========================================
+// DEBUGGING MIDDLEWARE - ADD THIS
+// ===========================================
+app.use((req, res, next) => {
+    console.log(`📌 REQUEST: ${req.method} ${req.url}`);
+    next();
 });
 
-// Add this TEMPORARY route before your other routes
-app.get('/admin-login-test', (req, res) => {
-    res.send(`
-        <h1>Admin Login Test</h1>
-        <form action="/admin-login-test" method="POST">
-            <input type="text" name="username" placeholder="Username"><br>
-            <input type="password" name="password" placeholder="Password"><br>
-            <button type="submit">Login</button>
-        </form>
-    `);
+// ===========================================
+// TEST ROUTE TO CHECK IF SERVER IS WORKING
+// ===========================================
+app.get('/test', (req, res) => {
+    res.send('✅ Server is working!');
 });
 
-app.post('/admin-login-test', (req, res) => {
-    res.send('Login attempt received: ' + JSON.stringify(req.body));
-});
-
-// Routes
+// ===========================================
+// ROUTES
+// ===========================================
 app.use('/api/upload', uploadRoutes);
 app.use('/api/cases', caseRoutes);
 app.use('/admin', adminRoutes);
@@ -156,9 +105,47 @@ app.get('/lookup', (req, res) => {
     });
 });
 
+// ===========================================
+// DEBUG ROUTES - CHECK ALL REGISTERED ROUTES
+// ===========================================
+app.get('/debug-routes', (req, res) => {
+    const routes = [];
+    
+    app._router.stack.forEach(middleware => {
+        if (middleware.route) {
+            routes.push({
+                path: middleware.route.path,
+                methods: Object.keys(middleware.route.methods)
+            });
+        } else if (middleware.name === 'router') {
+            middleware.handle.stack.forEach(handler => {
+                if (handler.route) {
+                    const basePath = middleware.regexp.source
+                        .replace('\\/?(?=\\/|$)', '')
+                        .replace(/\\\//g, '/')
+                        .replace(/\^/g, '');
+                    
+                    routes.push({
+                        path: basePath + (handler.route.path === '/' ? '' : handler.route.path),
+                        methods: Object.keys(handler.route.methods)
+                    });
+                }
+            });
+        }
+    });
+    
+    res.json({
+        totalRoutes: routes.length,
+        routes: routes.sort((a, b) => a.path.localeCompare(b.path))
+    });
+});
+
+// ===========================================
+// ERROR HANDLING
+// ===========================================
 // Error handling middleware
 app.use((err, req, res, next) => {
-    console.error(err.stack);
+    console.error('❌ ERROR:', err.stack);
     res.status(500).render('error', { 
         title: 'Error',
         message: 'Something went wrong!',
@@ -168,16 +155,21 @@ app.use((err, req, res, next) => {
 
 // 404 handler
 app.use((req, res) => {
+    console.log(`❌ 404 - Route not found: ${req.method} ${req.url}`);
     res.status(404).render('error', { 
         title: '404 Not Found',
         message: 'Page not found' 
     });
 });
 
-// Start server - DECLARE PORT ONLY ONCE HERE
+// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
     console.log(`📁 Project folder: ${__dirname}`);
     console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`📝 Test routes:`);
+    console.log(`   - http://localhost:${PORT}/test`);
+    console.log(`   - http://localhost:${PORT}/debug-routes`);
+    console.log(`   - http://localhost:${PORT}/admin/login`);
 });
