@@ -75,6 +75,43 @@ app.use((req, res, next) => {
     next();
 });
 
+// Add this near your other routes in server.js
+app.get('/debug-routes', (req, res) => {
+    const routes = [];
+    
+    // Get all registered routes
+    app._router.stack.forEach(middleware => {
+        if (middleware.route) {
+            // Routes registered directly on app
+            routes.push({
+                path: middleware.route.path,
+                methods: Object.keys(middleware.route.methods)
+            });
+        } else if (middleware.name === 'router') {
+            // Routes registered via router (like your admin routes)
+            middleware.handle.stack.forEach(handler => {
+                if (handler.route) {
+                    const path = middleware.regexp.source
+                        .replace('\\/?(?=\\/|$)', '')
+                        .replace(/\\\//g, '/')
+                        .replace(/\^/g, '')
+                        .replace(/\?/g, '');
+                    
+                    routes.push({
+                        path: path + (handler.route.path === '/' ? '' : handler.route.path),
+                        methods: Object.keys(handler.route.methods)
+                    });
+                }
+            });
+        }
+    });
+    
+    res.json({
+        routes: routes.sort(),
+        adminRoutesExist: routes.some(r => r.path.includes('/admin/login'))
+    });
+});
+
 // Routes
 app.use('/api/upload', uploadRoutes);
 app.use('/api/cases', caseRoutes);
