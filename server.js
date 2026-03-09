@@ -79,6 +79,7 @@ app.use((req, res, next) => {
 app.get('/debug-routes', (req, res) => {
     const routes = [];
     
+    
     // Get all registered routes
     app._router.stack.forEach(middleware => {
         if (middleware.route) {
@@ -110,6 +111,22 @@ app.get('/debug-routes', (req, res) => {
         routes: routes.sort(),
         adminRoutesExist: routes.some(r => r.path.includes('/admin/login'))
     });
+});
+
+// Add this TEMPORARY route before your other routes
+app.get('/admin-login-test', (req, res) => {
+    res.send(`
+        <h1>Admin Login Test</h1>
+        <form action="/admin-login-test" method="POST">
+            <input type="text" name="username" placeholder="Username"><br>
+            <input type="password" name="password" placeholder="Password"><br>
+            <button type="submit">Login</button>
+        </form>
+    `);
+});
+
+app.post('/admin-login-test', (req, res) => {
+    res.send('Login attempt received: ' + JSON.stringify(req.body));
 });
 
 // Routes
