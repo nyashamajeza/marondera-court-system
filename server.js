@@ -37,11 +37,29 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Session configuration
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'secret-key',
+    secret: process.env.SESSION_SECRET || 'marondera-court-super-secret-key-2026',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 3600000 } // 1 hour
+    cookie: { 
+        maxAge: 3600000,
+        httpOnly: true,
+        secure: false // Set to true only in production with HTTPS
+    }
 }));
+
+// After session configuration, add:
+app.use((req, res, next) => {
+    console.log('📋 Session Debug:');
+    console.log('  Path:', req.path);
+    console.log('  Session ID:', req.sessionID);
+    console.log('  Session User:', req.session.user ? 'Logged in' : 'Not logged in');
+    if (req.session.user) {
+        console.log('  User:', req.session.user.username);
+    }
+    console.log('  Cookies:', req.headers.cookie);
+    console.log('---');
+    next();
+});
 
 app.use(flash());
 

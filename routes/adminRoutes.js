@@ -20,20 +20,44 @@ router.get('/login', (req, res) => {
 });
 
 // Login process
+
 router.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
+        
+        // ===== ADD THESE DEBUG LINES =====
+        console.log('='.repeat(50));
+        console.log('🔐 LOGIN ATTEMPT');
+        console.log('Time:', new Date().toLocaleString());
+        console.log('Username received:', username);
+        console.log('Password received:', password ? '[PROVIDED]' : '[MISSING]');
+        console.log('Request body:', req.body);
+        // =================================
 
         // Find user
         const user = await User.findOne({ username, isActive: true });
+        console.log('User found in DB:', user ? 'YES' : 'NO');
+        
         if (!user) {
+            console.log('❌ User not found or inactive');
             req.flash('error', 'Invalid username or password');
             return res.redirect('/admin/login');
         }
 
+        console.log('User details:', {
+            id: user._id,
+            username: user.username,
+            role: user.role,
+            isActive: user.isActive
+        });
+
         // Check password
+        console.log('Checking password...');
         const isValid = await bcrypt.compare(password, user.password);
+        console.log('Password valid:', isValid ? 'YES' : 'NO');
+
         if (!isValid) {
+            console.log('❌ Invalid password');
             req.flash('error', 'Invalid username or password');
             return res.redirect('/admin/login');
         }
@@ -46,15 +70,22 @@ router.post('/login', async (req, res) => {
             role: user.role
         };
 
+        console.log('✅ Session created:', req.session.user);
+        console.log('Session ID:', req.sessionID);
+
         // Update last login
         user.lastLogin = new Date();
         await user.save();
+        console.log('✅ Last login updated');
 
         req.flash('success', `Welcome back, ${user.name}!`);
+        console.log('Redirecting to dashboard...');
+        console.log('='.repeat(50));
+        
         res.redirect('/admin/dashboard');
 
     } catch (error) {
-        console.error('Login error:', error);
+        console.error('❌ Login error:', error);
         req.flash('error', 'Login failed. Please try again.');
         res.redirect('/admin/login');
     }
