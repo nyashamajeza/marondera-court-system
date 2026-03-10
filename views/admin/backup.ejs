@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backup Management - Marondera Court</title>
+    <style>/* Same base styles */</style>
+</head>
+<body>
+    <nav class="navbar">...</nav>
+    <aside class="sidebar">...</aside>
+    <main class="main-content">
+        <div class="page-header"><h1>Backup Management</h1></div>
+        <div style="background:white; padding:2rem; border-radius:10px;">
+            <h3 style="color:#1e3c72; margin-bottom:1rem;">Automated Backups</h3>
+            <p>✅ Daily backups are automatically uploaded to AWS S3.</p>
+            <p>📦 Total documents backed up: <strong><%= stats.totalDocuments %></strong></p>
+            <p>💾 Total storage used: <strong><%= (stats.totalStorage / 1024 / 1024).toFixed(2) %> MB</strong></p>
+            <p>🕒 Last backup: <strong><%= stats.lastBackup %></strong></p>
+            <hr style="margin:1.5rem 0;">
+            <p>Backups are stored in the <code>marondera-court-backups</code> S3 bucket.</p>
+            <a href="/admin/dashboard" class="btn-primary">Back to Dashboard</a>
+        </div>
+    </main>
+</body>
+</html>

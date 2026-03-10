@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - Marondera Court</title>
+    <style>/* Same base styles as cases.ejs, plus table styles for users */</style>
+</head>
+<body>
+    <nav class="navbar">...</nav>
+    <aside class="sidebar">
+        <ul class="sidebar-menu">
+            <li><a href="/admin/dashboard">📊 Dashboard</a></li>
+            <li><a href="/admin/cases">📋 Cases</a></li>
+            <li><a href="/admin/documents">📄 Documents</a></li>
+            <li><a href="/admin/users" class="active">👥 Users</a></li>
+            <% if (user.role === 'Magistrate' || user.role === 'Admin') { %>
+                <li><a href="/admin/reports">📈 Reports</a></li>
+                <li><a href="/admin/backup">💾 Backup</a></li>
+            <% } %>
+        </ul>
+    </aside>
+    <main class="main-content">
+        <% if (success && success.length > 0) { %><div class="alert alert-success"><%= success %></div><% } %>
+        <% if (error && error.length > 0) { %><div class="alert alert-error"><%= error %></div><% } %>
+        <div class="page-header">
+            <h1>User Management</h1>
+            <a href="/admin/users/new" class="btn-primary"><i>+</i> Add New User</a>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Username</th><th>Name</th><th>Email</th><th>Role</th><th>Active</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(u => { %>
+                    <tr>
+                        <td><%= u.username %></td>
+                        <td><%= u.name %></td>
+                        <td><%= u.email || '—' %></td>
+                        <td><%= u.role %></td>
+                        <td><%= u.isActive ? '✅' : '❌' %></td>
+                        <td class="action-btns">
+                            <a href="/admin/users/<%= u._id %>/edit" class="btn-edit">Edit</a>
+                            <% if (u._id.toString() !== user.id) { %>
+                            <form method="POST" action="/admin/users/<%= u._id %>/delete" style="display:inline;" onsubmit="return confirm('Delete this user?');">
+                                <button type="submit" class="btn-delete">Delete</button>
+                            </form>
+                            <% } %>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

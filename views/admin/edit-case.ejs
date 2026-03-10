@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Case - Marondera Court</title>
+    <style>/* Same styles as new-case.ejs */</style>
+</head>
+<body>
+    <!-- Same navbar and sidebar as cases.ejs -->
+    <nav class="navbar">...</nav>
+    <aside class="sidebar">...</aside>
+    <main class="main-content">
+        <div class="page-header"><h1>Edit Case: <%= case.caseNumber %></h1></div>
+        <div class="form-container">
+            <form method="POST" action="/admin/cases/<%= case._id %>">
+                <div class="form-group">
+                    <label>Case Type</label>
+                    <select name="caseType" required>
+                        <option value="Small Claims" <%= case.caseType === 'Small Claims' ? 'selected' : '' %>>Small Claims</option>
+                        <option value="Civil" <%= case.caseType === 'Civil' ? 'selected' : '' %>>Civil</option>
+                        <option value="Criminal" <%= case.caseType === 'Criminal' ? 'selected' : '' %>>Criminal</option>
+                        <option value="Family" <%= case.caseType === 'Family' ? 'selected' : '' %>>Family</option>
+                        <option value="Traffic" <%= case.caseType === 'Traffic' ? 'selected' : '' %>>Traffic</option>
+                    </select>
+                </div>
+                <h3>Plaintiff</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Name *</label>
+                        <input type="text" name="parties[plaintiff][name]" value="<%= case.parties.plaintiff.name %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Contact</label>
+                        <input type="text" name="parties[plaintiff][contact]" value="<%= case.parties.plaintiff.contact || '' %>">
+                    </div>
+                </div>
+                <h3>Defendant</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Name *</label>
+                        <input type="text" name="parties[defendant][name]" value="<%= case.parties.defendant.name %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Contact</label>
+                        <input type="text" name="parties[defendant][contact]" value="<%= case.parties.defendant.contact || '' %>">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Hearing Date</label>
+                        <input type="date" name="hearingDate" value="<%= case.hearingDate ? new Date(case.hearingDate).toISOString().split('T')[0] : '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>Courtroom</label>
+                        <input type="text" name="courtroom" value="<%= case.courtroom || '' %>">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Magistrate</label>
+                        <input type="text" name="magistrate" value="<%= case.magistrate || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="status">
+                            <option value="Filed" <%= case.status === 'Filed' ? 'selected' : '' %>>Filed</option>
+                            <option value="Scheduled" <%= case.status === 'Scheduled' ? 'selected' : '' %>>Scheduled</option>
+                            <option value="In Progress" <%= case.status === 'In Progress' ? 'selected' : '' %>>In Progress</option>
+                            <option value="Completed" <%= case.status === 'Completed' ? 'selected' : '' %>>Completed</option>
+                            <option value="Adjourned" <%= case.status === 'Adjourned' ? 'selected' : '' %>>Adjourned</option>
+                            <option value="Closed" <%= case.status === 'Closed' ? 'selected' : '' %>>Closed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="description" rows="4"><%= case.description || '' %></textarea>
+                </div>
+                <button type="submit" class="btn-save">Update Case</button>
+                <a href="/admin/cases" class="btn-cancel">Cancel</a>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
