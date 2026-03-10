@@ -35,17 +35,20 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Session configuration
+// Session configuration - UPDATE THIS SECTION
 app.use(session({
     secret: process.env.SESSION_SECRET || 'marondera-court-super-secret-key-2026',
     resave: false,
     saveUninitialized: false,
     cookie: { 
-        maxAge: 3600000,
+        maxAge: 3600000, // 1 hour
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production' // true in production (HTTPS)
+        secure: process.env.NODE_ENV === 'production', // true in production (HTTPS)
+        sameSite: 'lax' // Add this for better compatibility
     }
 }));
+// Add this AFTER session configuration
+app.set('trust proxy', 1); // Trust first proxy (needed for Render)
 
 app.use(flash());
 
